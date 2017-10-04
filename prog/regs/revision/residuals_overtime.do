@@ -55,4 +55,25 @@ forvalues ii = 1/10  { ;
 			graph export "$figdir/pred_`outcome'_`czone'.pdf", replace; 
 } ;
 
+tempfile trendresults ;
+tempfile postout ;
+
+
+foreach outcome in $mainoutcomes { ; 
+postfile `trendresults' czone beta se tstat df using `post_out', replace; 
+	foreach czone in `czones'  { ; 
+		areg resid_ln_`outcome' year if czone == `czone', r ;
+			local tstat = abs(_b[year]/_se[year]) ;
+			post `trendresults' (`czone') (_b[year]) (_se[year]) (`tstat') (r(df)) ;
+	} ; 
+postclose `trendresults' ;
+
+use `post_out', clear ;
+di "***************************************";
+di "**** OUTCOME: `outcome' ***************" ;
+sum tstat,d ;
+di "***************************************" ; 
+save $datadir/postfile_`outcome'.dta, replace ; 
+} ;
+
 end
