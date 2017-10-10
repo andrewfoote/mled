@@ -72,7 +72,7 @@ levelsof czone, local(czones) ;
 
 foreach outcome in $mainoutcomes { ; 
 
-postfile trends_`outcome' czone beta se tstat df using `post_out', replace;
+postfile trends_`outcome' czone beta se tstat df totalpop using `post_out', replace;
 di "HERE" ; 
 	foreach czone in `czones'  { ; 
 		di "czone: `czone'" ; 
@@ -83,7 +83,9 @@ di "HERE" ;
 			local tstat = `beta'/`se' ;
 			local tstat_abs = abs(`tstat') ;
 			local df = r(df) ;
-			post trends_`outcome' (`czone') (`beta') (`se') (`tstat_abs') (`df') ;
+			sum total_pop if czone == `czone' ;
+			local pop = r(mean) ;
+			post trends_`outcome' (`czone') (`beta') (`se') (`tstat_abs') (`df') (`pop')  ;
 		} ;	
 	 
 postclose trends_`outcome' ;
@@ -93,7 +95,9 @@ use `post_out', clear ;
 di "***************************************";
 di "**** OUTCOME: `outcome' ***************" ;
 sum tstat,d ;
+sum tstat [weight=totalpop], d; 
 sum beta, d ;
+centile tstat, centile(5(5)95);
 di "***************************************" ; 
 save "$datdir/postfile_`outcome'.dta", replace ; 
 } ;
