@@ -30,18 +30,21 @@ use $datdir/CZ_ED_LAYOFF, clear
 do $prodir/preamble_cz.do
 
 #delimit ; 
-des ;
+keep if year>=1996;
 /*************************
 Create residuals 
 *************************/
 
-global mainoutcomes tef_tot ffe_tot  aw_tot aw_aa aw_1t4 aw_lt1y ;
-
+global mainoutcomes  ffe_tot   ;
+gen sample = 0 ; 
 foreach outcome in $mainoutcomes { ; 
 	areg ln_`outcome' i.year,absorb(czone) ; 
+		replace sample = 1 if e(sample) ;
 	predict resid_ln_`outcome', residuals  ;
 }; 
-
+tab sample; 
+keep if sample ==1 ;
+list year if czone == 4301 ; 	
 levelsof czone, local(czones) ; 
 
 forvalues ii = 1/10  { ;
@@ -55,25 +58,44 @@ forvalues ii = 1/10  { ;
 			graph export "$figdir/pred_`outcome'_`czone'.pdf", replace; 
 } ;
 
-tempfile trendresults ;
-tempfile postout ;
+tempname trendresults ;
+tempfile post_out ;
 
+di "`czones'" ;
+di "$mainoutcomes"  ;
+foreach czone in `czones' { ; 
+	qui tab year if czone == `czone' ;
+	drop if r(r) < 2 & czone == `czone' ; 
+};
+
+levelsof czone, local(czones) ;
 
 foreach outcome in $mainoutcomes { ; 
-postfile `trendresults' czone beta se tstat df using `post_out', replace; 
-	foreach czone in `czones'  { ; 
-		areg resid_ln_`outcome' year if czone == `czone', r ;
-			local tstat = abs(_b[year]/_se[year]) ;
-			post `trendresults' (`czone') (_b[year]) (_se[year]) (`tstat') (r(df)) ;
-	} ; 
-postclose `trendresults' ;
 
+postfile trends_`outcome' czone beta se tstat df using `post_out', replace;
+di "HERE" ; 
+	foreach czone in `czones'  { ; 
+		di "czone: `czone'" ; 
+		sum year if czone == 1 ;
+		 capture noisily reg resid_ln_`outcome' year if czone == `czone', r ;
+			local beta = _b[year];
+			local se = _se[year];
+			local tstat = `beta'/`se' ;
+			local tstat_abs = abs(`tstat') ;
+			local df = r(df) ;
+			post trends_`outcome' (`czone') (`beta') (`se') (`tstat_abs') (`df') ;
+		} ;	
+	 
+postclose trends_`outcome' ;
+di "closed" ; 
+di "opening" ;
 use `post_out', clear ;
 di "***************************************";
 di "**** OUTCOME: `outcome' ***************" ;
 sum tstat,d ;
+sum beta, d ;
 di "***************************************" ; 
-save $datadir/postfile_`outcome'.dta, replace ; 
+save "$datdir/postfile_`outcome'.dta", replace ; 
 } ;
 
 end
