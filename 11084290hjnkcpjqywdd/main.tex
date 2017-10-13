@@ -1,0 +1,106 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb} 
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{epstopdf}
+\usepackage{subfig}
+\usepackage{bbm}
+\usepackage{kpfonts}    % for nice fonts
+\usepackage{microtype} 
+\usepackage{booktabs}   % for nice tables
+\usepackage{bm}         % for bold math
+\usepackage{listings}   % for inserting code
+\usepackage{verbatim}   % useful for program listings
+\usepackage{color}  
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{setspace}
+% use for hypertext
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{natbib}
+\usepackage{authblk}
+\usepackage[hang,flushmargin]{footmisc} %dont indent footnotes
+\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black}
+
+\newcolumntype{K}[1]{>{\centering\arraybackslash}p{#1}}
+
+
+
+\title{The Effect of Local Labor Market Downturns on Postsecondary Enrollment and Program Choice\thanks{ Foote: Center for Economic Studies, U.S. Census Bureau, andrew.foote@census.gov. Grosz: Department of Economics, University of California Davis, mgrosz@ucdavis.edu. Special thanks to Massimo Anelli,  Dave Carlson and Matt Naven. Any opinions and conclusions expressed herein are those of the author(s) and do not necessarily represent the views of the U.S. Census Bureau. All results have been reviewed to ensure that no confidential information is disclosed.}}
+
+\date{\today\\  }
+
+
+
+\author[1]{Andrew Foote} 
+\author[2]{Michel Grosz}
+\affil[1]{Center for Economic Studies, U.S. Census Bureau}
+\affil[2]{Department of Economics, University of California, Davis}
+
+
+\begin{document}
+
+\begin{abstract}
+
+We examine how workers invest in human capital following job displacements. We make two key contributions considering prior work on this topic. First, we focus on local labor market shocks, using counts of workers involved in localized mass layoff events over the past two decades.  We find that, on average, two-year college enrollment increases by three students within three years for every 100 workers laid off. Second, we show that in addition to enrollment effects, there are heterogenous completion responses by field of study. The largest responses are in high-return fields, though this relationship is likely limited by institutional constraints.
+
+\end{abstract}
+
+
+\doublespacing
+\clearpage 
+
+\section{Introduction}
+\input{./sections/intro.tex}
+
+\section{Literature \label{sec:literature}}
+\input{./sections/lit.tex}
+
+\section{Data \label{sec:data}}
+\input{./sections/data.tex}
+
+\section{Descriptive Evidence label{sec:edllm}}
+
+\input{./sections/edllm.tex}
+
+\section{Methodology \label{sec:meth}}
+
+\input{./sections/methodology.tex} 
+
+\section{Results \label{sec:results}}
+
+\input{./sections/results.tex}
+
+\section{Conclusion \label{sec:conclusion}}
+
+\input{./sections/conclusion.tex}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\singlespacing	
+\bibliographystyle{aea} 
+\bibliography{BIBTEXAll2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Tables and Figures}
+
+\input{./sections/tables.tex}
+
+
+\clearpage
+\appendix
+\section{Appendix Tables and Figures}
+\label{subsec:apptab}
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}   
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}   
+
+
+\end{document}
