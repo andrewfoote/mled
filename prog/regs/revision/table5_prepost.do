@@ -90,7 +90,7 @@ foreach outcome in $mainoutcomes  { ;
 	local lhs_sum `outcome'_nosand1_47 ;
 	sum ln_`outcome'_nosand1_47 ;
 	
-	eststo spec`sec'`outcome': reg `lhs' l1_log_czlayoff l2_log_czlayoff l3_log_czlayoff `rhs_postvars' cztr*  czfe* yearfe* `agegroups' [weight=`weightvar'],   cluster(`clustervar');
+	eststo spec`sec'`outcome': reg `lhs' l1_log_czlayoff l2_log_czlayoff l3_log_czlayoff `rhs_postvars' cztr*  czfe* yearfe* `demographics' [weight=`weightvar'],   cluster(`clustervar');
 		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';

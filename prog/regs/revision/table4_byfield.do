@@ -74,20 +74,22 @@ local demographics `agegroups' `raceshare' share_male ;
 
 foreach outcome in aw_tot aw_aa aw_lt1y aw_1t4{ ;
 	eststo clear;
+	local x = 1 ; 
 	foreach field in TOT CTE CON HEA IT PUB FAM { ;
-		local lhs ln_`outcome'_nosand1_`field'_47 ;
-		local lhs_sum `outcome'_nosand1_`field'_47 ;
-		
-		eststo spec`sec'`outcome'`field': reg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  czfe* cztre* `agegroups
+		local lhs ln_`outcome'_`field'_nosand1_47 ;
+		local lhs_sum `outcome'_`field'_nosand1_47 ;
+		di "HERE" ;
+		eststo spec`x': reg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  czfe* cztre* `demographics'
 		[weight=`weightvar'],    cluster(`clustervar');
-	
+		di "HERE" ;
 		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
+		local x = `x' + 1 ; 
 	};
 
 	esttab  using "${tabdir}/revision/table4_`outcome'.tex", replace se(a2) b(a2)  r2  star(* .10 ** .05 *** .01) 
-	stat(N r2, labels("Observations" "R-Sq"))
+
 	noconstant nomtitles noobs nogaps noline nonumbers compress label  prehead(" ") posthead(" ") prefoot(" ") postfoot(" ") 
 	keep(l1_log_czlayoff l2_log_czlayoff l3_log_czlayoff  )
 	stat(ysu N  r2, labels("Y-Mean" "Observations"  "R-Sq") );

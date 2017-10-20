@@ -79,7 +79,7 @@ foreach sec in  47 69{;
 		local lhs ln_`outcome'_nosand1_`sec' ;
 		local lhs_sum `outcome'_nosand1_`sec' ;
 			
-		eststo : reg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  czfe*   cztre*  `agegroups' [weight=`weightvar'],  cluster(czone);
+		eststo spec`sec'`outcome': reg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  czfe*   cztre*  `demographics' [weight=`weightvar'],  cluster(czone);
 			sum `lhs_sum' if e(sample);
 			local zz=r(mean);
 			estadd scalar ysu=`zz';

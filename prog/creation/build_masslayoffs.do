@@ -7,7 +7,7 @@ with IPEDS collapsed data
 Author:ADF
 DATE: 01/26/2016
 **********/
-
+clear
 global rootdir "/home/research/masslayoff/education"
 global datdir "$rootdir/data"
 global rawdir "$rootdir/raw"
@@ -28,7 +28,7 @@ cd /home/research/masslayoff/data ;
 		des, full ;
 		
 		
-	keep fips year total_age_*_pop total_pop total_under30_ext total_age3044_ext total_age4554_ext total_age55p_ext 
+	keep fips year total_age_*_pop total_pop total_under30_ext total_age3044_ext total_age4554_ext total_age55p_ext  total_male_pop total_female_pop total_black_pop total_white_pop
 					total_ext adjacent_layoffs_ext ctytrend* lau_LF;
 	sum ;
 	tab year, gen(yearfe) ;		
@@ -45,6 +45,7 @@ cd /home/research/masslayoff/data ;
 	drop if _merge != 3 ;
 	
 	collapse (sum) total_age_*_pop total_pop total_under30_ext total_age3044_ext total_age4554_ext total_age55p_ext lau_LF
+	total_male_pop total_female_pop total_black_pop total_white_pop
 					total_ext, by(czone year) ;
 					
 	sum;					

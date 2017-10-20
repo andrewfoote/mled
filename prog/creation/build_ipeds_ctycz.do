@@ -240,5 +240,6 @@ save $datdir/CZ_EDUCATION_DATA.dta, replace
 tab year, m 
 
 sum
+des, full
 
 log close 

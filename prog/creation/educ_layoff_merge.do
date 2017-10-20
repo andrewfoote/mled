@@ -6,7 +6,7 @@ Merges layoff and education data
 Author:ADF
 DATE: 01/26/2016
 **********/
-
+clear
 global rootdir "/home/research/masslayoff/education"
 global datdir "$rootdir/data"
 global rawdir "$rootdir/raw"
