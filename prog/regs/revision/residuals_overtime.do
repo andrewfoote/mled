@@ -35,10 +35,18 @@ keep if year>=1996;
 Create residuals 
 *************************/
 
+gen share_0_19 = (total_age_0_9_pop + total_age_10_19_pop)/total_pop ;
+
+foreach age in 0_18 18_29 30_44 45_54 55p {;
+gen share_`age' = total_age_`age'_pop / total_pop ;
+local agegroups "`agegroups' share_`age'" ;
+
+};
+
 global mainoutcomes  ffe_tot   ;
 gen sample = 0 ; 
 foreach outcome in $mainoutcomes { ; 
-	areg ln_`outcome' i.year,absorb(czone) ; 
+	areg ln_`outcome' i.year `agegroups',absorb(czone) ; 
 		replace sample = 1 if e(sample) ;
 	predict resid_ln_`outcome', residuals  ;
 }; 
@@ -100,6 +108,14 @@ sum beta, d ;
 centile tstat, centile(5(5)95);
 di "***************************************" ; 
 save "$datdir/postfile_`outcome'.dta", replace ; 
+
+twoway (kdensity tstat) (hist tstat),
+	xtitle("T-statistic")
+	ytitle("Density") 
+	legend(off)
+	xline(1.96)
+	;
+	graph export "$figdir/tdist_`outcome'.eps", replace; 
 } ;
 
 end

@@ -46,6 +46,14 @@ local agegroups "`agegroups' share_`age'" ;
 
 };
 
+foreach race in white black { ; 
+	gen share_`race' = total_`race'_pop/total_pop ; 
+};
+
+gen share_male = total_male_pop/total_pop; 
+
+local demographics `agegroups' `raceshare' share_male ;
+
 local clustervar czone  ;
 local type cz  ;
 local weightvar total_pop ;
@@ -69,14 +77,15 @@ xtset czone year;
 	
 	/* just doing publics ('47') */
 eststo clear;
-foreach sec in  47 {;
 foreach outcome in $mainoutcomes  { ;
-	sum ln_`outcome'_`sec' ;
+	local lhs ln_`outcome'_nosand1_47 ;
+	local lhs_sum `outcome'_nosand1_47 ;
+	sum ln_`outcome'_nosand1_47 ;
 	eststo clear ;
 	local x = 1 ;
 		
-	eststo a`x': reg ln_`outcome'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff  [weight=total_pop], cluster(czone);
-		sum `outcome'_`sec' if e(sample);
+	eststo a`x': reg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff  [weight=total_pop], cluster(czone);
+		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
 		
@@ -88,8 +97,8 @@ foreach outcome in $mainoutcomes  { ;
 			
 					local x = `x' + 1 ; 
 
-	eststo a`x': areg ln_`outcome'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  [weight=total_pop], absorb(czone) cluster(czone);
-		sum `outcome'_`sec' if e(sample);
+	eststo a`x': areg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  [weight=total_pop], absorb(czone) cluster(czone);
+		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
 		
@@ -100,9 +109,9 @@ foreach outcome in $mainoutcomes  { ;
 			estadd  local total_pval = string(tprob(r(df),(`total_beta'/`total_se')),"%5.4f"): a`x' ;
 		local x = `x' + 1 ; 
 
-	eststo a`x': areg ln_`outcome'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
-	`agegroups' [weight=total_pop], absorb(czone) cluster(czone);
-		sum `outcome'_`sec' if e(sample);
+	eststo a`x': areg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
+	`demographics' [weight=total_pop], absorb(czone) cluster(czone);
+		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
 		
@@ -114,9 +123,9 @@ foreach outcome in $mainoutcomes  { ;
 
 			local x = `x' + 1 ; 
 
-	eststo a`x': areg ln_`outcome'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
-	`agegroups' cztre* [weight=total_pop], absorb(czone) cluster(czone);
-		sum `outcome'_`sec' if e(sample);
+	eststo a`x': areg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
+	`demographics' cztre* [weight=total_pop], absorb(czone) cluster(czone);
+		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
 
@@ -127,9 +136,9 @@ foreach outcome in $mainoutcomes  { ;
 			estadd  local total_pval = string(tprob(r(df),(`total_beta'/`total_se')),"%5.4f"): a`x' ;
 				local x = `x' + 1 ; 
 	
-	eststo a`x': areg ln_`outcome'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
+	eststo a`x': areg `lhs' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe* 
 		cztre* [weight=total_pop], absorb(czone) cluster(czone);
-		sum `outcome'_`sec' if e(sample);
+		sum `lhs_sum' if e(sample);
 		local zz=r(mean);
 		estadd scalar ysu=`zz';
 		
@@ -140,14 +149,11 @@ foreach outcome in $mainoutcomes  { ;
 			estadd  local total_pval = string(tprob(r(df),(`total_beta'/`total_se')),"%5.4f"): a`x' ;
 				local x = `x' + 1 ; 
 
-	esttab using "${tabdir}/lev/reg_main_rev`outcome'.tex", replace se r2 star(* .10 ** .05 *** .01) 
+	esttab using "${tabdir}/revision/reg_main_rev`outcome'.tex", replace se r2 star(* .10 ** .05 *** .01) 
 		noconstant nomtitles noobs nogaps noline nonumbers compress label  prehead(" ") posthead(" ") prefoot(" ") postfoot(" ") 
 		keep(l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff  )
 		stat(total_beta total_se total_pval ysu N r2, labels("Total Effect" "(se)" "P-val" "Y-Mean" "Observations" "R-sq") );
 	};
-
-
-		
-}; 	
+	
 		
 		
