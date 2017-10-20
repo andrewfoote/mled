@@ -8,7 +8,7 @@ global rootdir "/home/research/masslayoff/education"
 global datdir "$rootdir/data"
 global rawdir "$rootdir/raw"
 global prodir "$rootdir/prog"
-global figdir "$rootdir/fig"
+global figdir "$rootdir/fig/revision"
 global tabdir "$rootdir/tab"
 global logdir "$rootdir/log" 
 set maxvar 32000

@@ -152,7 +152,7 @@ keep unitid year countyfips
 				bysort unitid: egen flag_in1996=total(ext_1996)
 				replace flag_in1996=flag_in1996>0
 			
-			foreach v of varlist aw_tot aw_lt1y aw_1t4 aw_aa ffe_tot tef_tot{
+			foreach v of varlist aw_tot* aw_lt1y* aw_1t4* aw_aa* ffe_tot* tef_tot* {
 				gen `v'_always=`v' if flag_alwayshas==1
 				gen `v'_nosand1=`v' if flag_nosandwich1==1
 				gen `v'_nosand2=`v' if flag_nosandwich2==1
@@ -241,33 +241,4 @@ tab year, m
 
 sum
 
-end 
-
-		dddd
-* HERE, I WILL CALCULATE THE OUTCOME VARIABLES AND THEN COLLAPSE TO A CTY YEAR PANEL, AND A CZ-YEAR PANEL
-* ALSO ON TO - DO LIST IS DO A COUNTY YEAR PANEL WITH ADJACENT COUNTY LAYOFFS AS WELL
-	*just keep some layoff data
-	cd /home/research/masslayoff/data
-	use FINAL_MASSLAYOFF_DATA, clear
-		keep fips year total_ext lau* cty* total_pop
-		tempfile templay
-		save `templay'
-
-	*Just keep some CZ data
-	use FINALMASSLAYOFFS_CZONE
-		keep czone year total_ext lau* total_pop
-			renpfix total cz_total
-			renpfix lau cz_lau
-			tempfile tempcz
-			save `tempcz'
-		restore
-	*Merge on county-level mass layoffs
-		merge m:1 fips year using `templay'			
-	*Merge on CZ level mass layoffs
-		drop _merge
-		merge m:1 czone year using `tempcz'
-	
-	*Drop Territories
-	save $datdir/MASSLAYOFF_EDUCATION_DATA, replace
-	
 log close 
