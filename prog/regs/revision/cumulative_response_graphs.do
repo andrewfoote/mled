@@ -97,7 +97,7 @@ foreach g in 0 1 2 3 4 5 6 7 8 9 10{;
 			scatter b up lo y, connect(l l l) ytitle("Cumulated Response") xtitle("Years Since Shock") 
 					lpattern(solid dash dash) msymbol(o none none) lcolor(black black black) mcolor(black) legend(off) yline(0, lcolor(gs6)) graphregion(color(white)) bgcolor(white)
 					yscale(r(-.04(.02).04)) ylabel(-.04(.02).04, nogrid) xscale(r(-1(1)6)) xlabel(-1(1)6);
-				graph export "$figdir/cumresp_cz_`outcome'`sec'.png", replace;
+				graph export "$figdir/cumresp_cz_`outcome'`sec'.pdf", replace;
 				};
 				};
 				};

@@ -109,13 +109,15 @@ centile tstat, centile(5(5)95);
 di "***************************************" ; 
 save "$datdir/postfile_`outcome'.dta", replace ; 
 
-twoway (kdensity tstat) (hist tstat),
+twoway (kdensity tstat) (hist tstat)
+    (scatteri 0 1.96 .25 1.96, recast(line) lcolor(red) lpattern(dash) lwidth(thick)),
 	xtitle("T-statistic")
 	ytitle("Density") 
 	legend(off)
 	xline(1.96)
 	;
 	graph export "$figdir/tdist_`outcome'.eps", replace; 
+	graph export "$figdir/tdist_`outcome'.png", replace; 
 } ;
 
 end

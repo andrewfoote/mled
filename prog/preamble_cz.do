@@ -7,6 +7,10 @@ gen aw_`g'_TOT=aw_`g'
 gen aw_`g'_TOT_47=aw_`g'_47
 gen aw_`g'_TOT_69=aw_`g'_69
 gen aw_`g'_TOT_4769=aw_`g'_4769
+gen aw_`g'_TOT_nosand1 =aw_`g'
+gen aw_`g'_TOT_nosand1_47=aw_`g'_47
+gen aw_`g'_TOT_nosand1_69=aw_`g'_69
+gen aw_`g'_TOT_nosand1_4769=aw_`g'_4769
 }
 
 *create logs
