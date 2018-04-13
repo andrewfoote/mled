@@ -109,6 +109,8 @@ foreach outcome in $mainoutcomes  { ;
 					sum `outcome'_`sec' if e(sample);
 					local zz=r(mean);
 					estadd scalar ysu=`zz';
+					di "TEST OF THE COMMUTING ZONE TRENDS FOR OUTCOME `outcome' _ `sec'" ;
+					test cztre* ;
 				};
 				esttab * using "${tabdir}/lev/reg_mainregagg_`sec'_`type'.tex", replace se(a2) b(a2)  r2 star(* .10 ** .05 *** .01) 
 				noconstant nomtitles noobs nogaps noline nonumbers compress label  prehead(" ") posthead(" ") prefoot(" ") postfoot(" ") 

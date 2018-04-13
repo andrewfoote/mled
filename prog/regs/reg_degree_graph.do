@@ -52,7 +52,7 @@ xtset czone year;
 	label var l4_log_czlayoff "Layoffs, t-4";	
 	label var l5_log_czlayoff "Layoffs, t-5";	
 tempfile graphfile ;
-	postfile programgraph str3 program_name str10 level response using `graphfile', replace;
+	postfile programgraph str3 program_name str10 level response stderr using `graphfile', replace;
 	
 	
 	
@@ -64,7 +64,8 @@ foreach sec in 47 {;
 		eststo spec`sec'`outcome'`field': reg `outcome'_`field'_`sec' l1_log_czlayoff  l2_log_czlayoff l3_log_czlayoff yearfe*  czfe* cztre* [weight=`weightvar'],    cluster(`clustervar');
 		lincom l1_log_czlayoff+l2_log_czlayoff+ l3_log_czlayoff ;
 			local estimate = r(estimate) ;
-			post programgraph ("`field'") ("`outcome'") (`estimate') ;
+			local se 	= r(se) ;
+			post programgraph ("`field'") ("`outcome'") (`estimate') (`se');
 		};
 	};
 };

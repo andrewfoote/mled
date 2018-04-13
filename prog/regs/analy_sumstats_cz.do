@@ -50,6 +50,8 @@ do $prodir/preamble_cz.do
 	}
  
  
+
+ 
 label var total_ext           "Workers in Mass Layoffs"
 label var total_ext_share     "Workers in Mass Layoffs as Share of Labor Force"
 label var sh_1                "Layoffs $>$ 1\% of Labor Force"
@@ -86,5 +88,13 @@ eststo a1: estpost tabstat total_ext total_ext_share sh_1 sh_5 urate total_pop w
 *eststo a2: estpost tabstat total_ext total_ext_share sh_1 sh_5 urate total_pop workage $eds if year<2007, s(mean sd) col(stat)
 *eststo a3: estpost tabstat total_ext total_ext_share sh_1 sh_5 urate total_pop workage $eds if year>2006, s(mean sd) col(stat)
 esttab using "${tabdir}/lev/table_sumstats.tex", main(mean a3) aux(sd a3) `theusual' prehead(" ") prefoot(" ") posthead(" ") postfoot(" ")
-fff
+
+
+/* Create the within CZ mass layoff variation */
+
+bys cz: egen sd_mlrate = sd(total_ext_share)
+
+sum sd_mlrate, d
+	
+	
 	

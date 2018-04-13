@@ -416,7 +416,9 @@ foreach suff in 1t4 aa lt1y {
 	local x = `x' + 1 
 }
 
-reshape long return_ b_tot_ ns sig_tot_ sig_ret_, i(top4) j(newcat)
+gen 
+
+reshape long return_ b_tot_ ns sig_tot_ sig_ret_ se_tot_, i(top4) j(newcat)
 
 gen category = "1-4 Yr" if newcat == 1
 	replace category = "AA" if newcat == 2
@@ -425,23 +427,23 @@ gen category = "1-4 Yr" if newcat == 1
 	
 keep if b_tot_ != 0 & return_ > -3 
 
-
+gen graph_weight = ns/se_tot_ ; 
 *All
-twoway (scatter b_tot_ return_  [weight = ns], msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=ns], lcolor(red))
+twoway (scatter b_tot_ return_  [weight = graph_weight], msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=graph_weight], lcolor(red))
 	graph export "$figdir/scatter_bycip_all.eps", replace
-	reg b_tot_ return_ [weight=ns], r
+	reg b_tot_ return_ [weight=graph_weight], r
 *Significant Returns
-twoway (scatter b_tot_ return_  [weight = ns] if sig_ret==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=ns]  if sig_ret==1, lcolor(red))
+twoway (scatter b_tot_ return_  [weight = graph_weight] if sig_ret==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=graph_weight]  if sig_ret==1, lcolor(red))
 	graph export "$figdir/scatter_bycip_sigret.eps", replace
-	reg b_tot_ return_ [weight=ns]  if sig_ret==1, r
+	reg b_tot_ return_ [weight=graph_weight]  if sig_ret==1, r
 *Significant Coeff
-twoway (scatter b_tot_ return_  [weight = ns] if sig_tot==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=ns]  if sig_tot==1, lcolor(red))
+twoway (scatter b_tot_ return_  [weight = graph_weight] if sig_tot==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=graph_weight]  if sig_tot==1, lcolor(red))
 	graph export "$figdir/scatter_bycip_sigtot.eps", replace
-	reg b_tot_ return_ [weight=ns]  if sig_tot==1, r
+	reg b_tot_ return_ [weight=graph_weight]  if sig_tot==1, r
 *Significant Coeff AND significant return
-twoway (scatter b_tot_ return_  [weight = ns] if sig_tot==1 & sig_ret==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=ns]  if sig_tot==1 & sig_ret==1, lcolor(red))
+twoway (scatter b_tot_ return_  [weight = graph_weight] if sig_tot==1 & sig_ret==1, msymbol(circle_hollow) ) (lfit b_tot_ return_  [weight=graph_weight]  if sig_tot==1 & sig_ret==1, lcolor(red))
 	graph export "$figdir/scatter_bycip_sigrettot.eps", replace
-	reg b_tot_ return_ [weight=ns]  if sig_tot==1 & sig_ret==1, r
+	reg b_tot_ return_ [weight=graph_weight]  if sig_tot==1 & sig_ret==1, r
 
 
 *
